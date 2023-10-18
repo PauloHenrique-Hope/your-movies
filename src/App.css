@@ -1,38 +1,197 @@
-.App {
+
+.App{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  background-color: #212529;
+  height: 100%;
+}
+
+.NavBar{
+  display: flex;
+  align-items: center;
+  width: 100%;
+  justify-content: center;
+  gap: 50px;
+  background-color: #364fc7;
+  padding: 10px;
+  color: #dbe4ff;
+  border-radius: 20px;
+}
+
+.NavBar img{
+  width: 60px;
+}
+
+.NavBar h3{
+  font-size: 30px;
+  letter-spacing: 1.0px;
+}
+
+.SearchBar{
+  display: flex;
+  gap: 2px;
+  width: fit-content;
+  border: 1px solid #dbe4ff;
+  border-radius: 40px;
+  padding: 10px;
+  background-color: #3b5bdb;
+  
+}
+
+.SearchBar input{
+  width: 300px;
+  padding: 5px;
+  border: none;
+  outline: none;
+  background-color: transparent;
+  color: #dbe4ff;
+  font-size: 16px;
+  font-weight: bold;
+  letter-spacing: 0.7px;
+}
+
+.SearchBar input::placeholder{
+  color: #dbe4ff;
+}
+
+.SearchBar .iconSearch{
+  width: 27px;
+  background-color: transparent;
+  stroke: #edf2ff;
+  stroke-width: 1.5px;
+}
+
+.Main{
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  width: 800px;
+  height: 100%;
+  margin-top: 15px;
+  background-color: #343a40;
+  padding: 10px;
+  position: relative; 
+}
+
+.Loading h3{
+  color: #dee2e6;
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.btnIsOpen{
+  position: absolute;
+  left: 330px;
+  color: #dbe4ff;
+  cursor: pointer;
+  font-size: 40px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+
+.MoviesList{
+  width: 350px;
+  height: 100%;
+  background-color: #343a40;
+  padding: 10px;
+  border: 1px solid #495057;
+  border-radius: 12px;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.MoviesWatched{
+  width: 400px;
+  height: 100%;
+  background-color: #343a40;
+  padding: 10px;
+  box-shadow: 1px 1px 1px 2px rgba(36, 35, 35, 0.521);
+  border-radius: 12px;
+}
+
+.btn-close{
+  border: none;
+  border-radius: 20px;
+  padding: 7px;
+  font-size: 25px;
+  cursor: pointer;
+}
+
+.BoxWatched{
   display: flex;
   flex-direction: column;
-  align-items: center;
+  gap: 20px;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  align-items: center;
+  
 }
 
-.App-link {
-  color: #61dafb;
+.BoxWatched p{
+  font-size: 18px;
+  font-weight: 600;
+  color: #dee2e6;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.box-info{
+  display: flex;
+  gap: 7px;
+}
+
+.movieBox{
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  color: #dee2e6;
+}
+
+.movieBox img{
+  width: 180px;
+}
+
+.movieBoxInfo{
+  font-size: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.movie-box-title{
+  text-transform: capitalize;
+  font-size: 19px;
+  font-weight: 600;
+}
+
+.plot{
+  font-size: 14px;
+  color: #b6b9bb;
+}
+
+.error{
+  font-size: 20px;
+  font-weight: bold;
+  color: #dee2e6;
+  text-align: center;
+}
+
+.MovieCard{
+  display: flex;
+  gap: 20px;
+  margin-bottom: 10px;
+  color: #dee2e6;
+  padding: 4px;
+  border-bottom: 1px solid #646d7791;
+}
+
+.MovieCard:hover{
+  cursor: pointer;
+  background-color:#495057;
+}
+
+.Info-Container{
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.MovieCard img{
+  width: 70px;
 }
