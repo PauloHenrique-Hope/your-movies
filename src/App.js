@@ -10,7 +10,6 @@ import cinema from './assets/cinema.png'
 // API KEY
 const KEY = "684daf52";
 
-let open = false;
 
 function App() {
 
@@ -20,11 +19,19 @@ function App() {
   const [error, setError] = useState(""); 
   const [query, setQuery] = useState("interstellar");
   const [selectedId, setSelectedId] = useState(null);
+  const [watched, setWatched] = useState([]);
+
+  let countMovie = watched.length;
 
   // function handleIsOpen(open){
   //   setIsOpen((open) => !open)
   //   console.log(isOpen)
   // }
+
+  function HandleAddWatched(movie){
+    setWatched(watched => [...watched, movie]);
+    
+  }
 
   function HandleSelectedMovie(id){
     setSelectedId((selectedId) => id === selectedId? null : id);
@@ -64,7 +71,7 @@ function App() {
   return (
     <div className="App">
       <NavBar query={query} setQuery={setQuery}/>
-      <Main movies = {movies} isLoading={isLoading} error={error} selectedId={selectedId} onSelectedMovie={HandleSelectedMovie} onCloseMovie={HandleCloseMovie}/>
+      <Main movies = {movies} isLoading={isLoading} error={error} selectedId={selectedId} onSelectedMovie={HandleSelectedMovie} onCloseMovie={HandleCloseMovie} onAddWatched={HandleAddWatched} watched={watched} countMovie={countMovie}/>
     </div>
   );
 }
@@ -93,17 +100,18 @@ function SearchBar({query, setQuery}){
 }
 
 
-function Main({movies, isLoading, error, onSelectedMovie, selectedId, onCloseMovie}){
+function Main({movies, isLoading, error, onSelectedMovie, selectedId, onCloseMovie, onAddWatched, watched, countMovie}){
   return(
     <div className='Main'>
       <MoviesList movies = {movies} isLoading={isLoading} error={error} selectedId={selectedId} onSelectedMovie={onSelectedMovie} />
-      <MoviesWatched selectedId={selectedId} onCloseMovie={onCloseMovie}/>
+      <MoviesWatched selectedId={selectedId} onCloseMovie={onCloseMovie} onAddWatched={onAddWatched} watched={watched} countMovie={countMovie}/>
+      
     </div>
   )
 }
 
 
-function MoviesList({movies, isLoading, error, onSelectedMovie, selectedId}){
+function MoviesList({movies, isLoading, error, onSelectedMovie}){
   return(
     <div className='MoviesList'>
       {isLoading && <Loading/>}
@@ -118,20 +126,39 @@ function MoviesList({movies, isLoading, error, onSelectedMovie, selectedId}){
     </div>
   )
 }
-
-
-function MoviesWatched({selectedId, onCloseMovie}){
-  return(
-    <div className='MoviesWatched'>
-      {selectedId? <MovieDetails selectedId={selectedId} onCloseMovie={onCloseMovie}/> : <BoxWatched/>}
-      
-    </div>
-  )
-}
-
-function MovieDetails({selectedId, onCloseMovie}){
+function MovieDetails({selectedId, onCloseMovie, onAddWatched}){
 
   const [movies, setMovies] = useState({});
+  
+
+  const {
+    Title: title,
+    Year: year,
+    Poster: poster,
+    Runtime: runtime,
+    imdbRating,
+    Plot: plot,
+    Released: released,
+    Actors: actors,
+    Director: director,
+    Genre: genre,
+
+  } = movies;
+
+  function onHandleWatched(){
+    const newWatchedMovie = {
+      imdbID: selectedId,
+      title,
+      year,
+      poster,
+      imdbRating: Number(imdbRating),
+      runtime: Number(runtime.split('').at(0)),
+    }
+
+    
+    onAddWatched(newWatchedMovie);
+    onCloseMovie(true);
+  }
 
   useEffect(function (){
     async function getMovieDetails(){
@@ -140,7 +167,7 @@ function MovieDetails({selectedId, onCloseMovie}){
 
       const data = await res.json();
       setMovies(data);
-      console.log(data);
+      
     }
     getMovieDetails();
   }, [selectedId])
@@ -148,12 +175,51 @@ function MovieDetails({selectedId, onCloseMovie}){
   return(
     <div className='MovieDetails'>
       <button className='btn-close' onClick={onCloseMovie}>&larr;</button>
-      <BoxMovie movies = {movies}/>
+      <BoxMovie movies = {movies} onHandleWatched={onHandleWatched} onCloseMovie={onCloseMovie}/>
     </div>
   )
 }
 
-function BoxMovie({movies}){
+
+function MoviesWatched({selectedId, onCloseMovie, onAddWatched,onHandleWatched, watched, countMovie}){
+  return(
+    <>
+      
+        <div className='moviesWatchedBox'>
+          <div className='MoviesWatched'>
+            {selectedId? <MovieDetails selectedId={selectedId} onCloseMovie={onCloseMovie} onAddWatched={onAddWatched}/> : <BoxWatched onHandleWatched={onHandleWatched} countMovie={countMovie}/>}
+          </div>
+          {selectedId ||< WatchedList watched={watched}/>}
+        </div>
+      
+    </>  
+  )
+}
+
+function WatchedList({watched}){
+  return(
+    <div>
+      {watched.map(movie => (
+        < WatchedMovies movie={movie} key={movie.imdbID}/>
+      ))}
+    </div>
+  )
+}
+
+function WatchedMovies({movie}){
+  return(
+    <div className='MovieCard'>
+        <img src={movie.poster} alt={movie.title} />
+        <div className='Info-Container'>
+          <p>{movie.title}</p>
+          <p>{movie.year}</p>
+          
+        </div>
+    </div>
+  )
+}
+
+function BoxMovie({movies, onHandleWatched}){
   return(
     <div className='movieBox'>
       <img src={movies.Poster} alt={movies.Title} />
@@ -162,6 +228,7 @@ function BoxMovie({movies}){
         <p>📅 {movies.Released}</p>
         <p>{movies.Genre}</p>
         <p>⭐ {movies.imdbRating} IMDB Rating</p>
+        <button className='btn-add' onClick={onHandleWatched}>+ Add movie</button>
         
       </div>
       <p className='plot'>{movies.Plot}</p>
@@ -169,19 +236,20 @@ function BoxMovie({movies}){
     </div>
   )
 }
-
-function BoxWatched(){
+function BoxWatched({countMovie}){
   return(
     <div className='BoxWatched'>
       <p>MOVIES YOU WATCHED</p>
       <div className='box-info'>
-        <p>🎃0 movies </p>
+        <p>🎃{countMovie} movies </p>
         <p>⭐ 0</p>
         <p>⏳ 0 min</p>
       </div>
     </div>
   )
 }
+
+
 
 function ErrorMessage({message}){
   return(
