@@ -28,6 +28,10 @@ function App() {
   //   console.log(isOpen)
   // }
 
+  function handleRemoveMovie(id){
+      setWatched(watched => watched.filter(movie => movie.imdbID !== id));
+  }
+
   function HandleAddWatched(movie){
     setWatched(watched => [...watched, movie]);
     
@@ -71,7 +75,7 @@ function App() {
   return (
     <div className="App">
       <NavBar query={query} setQuery={setQuery}/>
-      <Main movies = {movies} isLoading={isLoading} error={error} selectedId={selectedId} onSelectedMovie={HandleSelectedMovie} onCloseMovie={HandleCloseMovie} onAddWatched={HandleAddWatched} watched={watched} countMovie={countMovie}/>
+      <Main movies = {movies} isLoading={isLoading} error={error} selectedId={selectedId} onSelectedMovie={HandleSelectedMovie} onCloseMovie={HandleCloseMovie} onAddWatched={HandleAddWatched} watched={watched} countMovie={countMovie} onRemoveMovie={handleRemoveMovie}/>
     </div>
   );
 }
@@ -100,11 +104,11 @@ function SearchBar({query, setQuery}){
 }
 
 
-function Main({movies, isLoading, error, onSelectedMovie, selectedId, onCloseMovie, onAddWatched, watched, countMovie}){
+function Main({movies, isLoading, error, onSelectedMovie, selectedId, onCloseMovie, onAddWatched, watched, countMovie, onRemoveMovie}){
   return(
     <div className='Main'>
       <MoviesList movies = {movies} isLoading={isLoading} error={error} selectedId={selectedId} onSelectedMovie={onSelectedMovie} />
-      <MoviesWatched selectedId={selectedId} onCloseMovie={onCloseMovie} onAddWatched={onAddWatched} watched={watched} countMovie={countMovie}/>
+      <MoviesWatched selectedId={selectedId} onCloseMovie={onCloseMovie} onAddWatched={onAddWatched} watched={watched} countMovie={countMovie} onRemoveMovie={onRemoveMovie}/>
       
     </div>
   )
@@ -181,39 +185,40 @@ function MovieDetails({selectedId, onCloseMovie, onAddWatched}){
 }
 
 
-function MoviesWatched({selectedId, onCloseMovie, onAddWatched,onHandleWatched, watched, countMovie}){
+function MoviesWatched({selectedId, onCloseMovie, onAddWatched,onHandleWatched, watched, countMovie, onRemoveMovie}){
   return(
-    <>
+  
       
         <div className='moviesWatchedBox'>
           <div className='MoviesWatched'>
             {selectedId? <MovieDetails selectedId={selectedId} onCloseMovie={onCloseMovie} onAddWatched={onAddWatched}/> : <BoxWatched onHandleWatched={onHandleWatched} countMovie={countMovie}/>}
           </div>
-          {selectedId ||< WatchedList watched={watched}/>}
+          {selectedId ||< WatchedList watched={watched} onRemoveMovie={onRemoveMovie}/>}
         </div>
-      
-    </>  
+
   )
 }
 
-function WatchedList({watched}){
+function WatchedList({watched, onRemoveMovie}){
   return(
     <div>
       {watched.map(movie => (
-        < WatchedMovies movie={movie} key={movie.imdbID}/>
+        < WatchedMovies movie={movie} key={movie.imdbID} onRemoveMovie={onRemoveMovie}/>
       ))}
     </div>
   )
 }
 
-function WatchedMovies({movie}){
+function WatchedMovies({movie, onRemoveMovie}){
+
   return(
     <div className='MovieCard'>
         <img src={movie.poster} alt={movie.title} />
         <div className='Info-Container'>
-          <p>{movie.title}</p>
-          <p>{movie.year}</p>
-          
+          <p>🎬 {movie.title}</p>
+          <p>📅 {movie.year}</p>
+          <p>✨ {movie.imdbRating}</p>
+          <button className='btnRemove' onClick={() => onRemoveMovie(movie.imdbID)}> x </button>
         </div>
     </div>
   )
