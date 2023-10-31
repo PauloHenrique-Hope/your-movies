@@ -30,6 +30,7 @@ function App() {
 
   function handleRemoveMovie(id){
       setWatched(watched => watched.filter(movie => movie.imdbID !== id));
+      console.log(id);
   }
 
   function HandleAddWatched(movie){
