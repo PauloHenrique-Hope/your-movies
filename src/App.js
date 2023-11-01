@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import './App.css';
 
+import StarRating from './StarRating';
 
 // ASSETS
 import cinema from './assets/cinema.png'
@@ -220,6 +221,7 @@ function WatchedMovies({movie, onRemoveMovie}){
           <p>📅 {movie.year}</p>
           <p>✨ {movie.imdbRating}</p>
           <button className='btnRemove' onClick={() => onRemoveMovie(movie.imdbID)}> x </button>
+          
         </div>
     </div>
   )
@@ -237,7 +239,10 @@ function BoxMovie({movies, onHandleWatched}){
         <button className='btn-add' onClick={onHandleWatched}>+ Add movie</button>
         
       </div>
-      <p className='plot'>{movies.Plot}</p>
+      <div className='StarRating'>
+        <StarRating maxLength={10}/>
+        <p className='plot'>{movies.Plot}</p>
+      </div>
 
     </div>
   )

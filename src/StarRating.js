@@ -11,7 +11,7 @@ const containerStarsStyle = {
     gap: "5px",
 }
 
-export default function StartRating({maxLength = 5}){
+export default function StarRating({maxLength = 5}){
 
     const [rating, setRating] = useState(0)
     const [tempRating, setTempRating] = useState(0)
@@ -41,7 +41,7 @@ const StarStyle = {
     width: "25px",
     height: "25px",
     cursor: "pointer",
-    
+    color: "#ffd43b",
     
 }
 
